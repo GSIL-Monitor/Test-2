@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.linkcircle.mapper.IccpMapper">
+	<!-- 查询所有iccp-sn的信息 -->
+	<select  id="findIccpSnInfo" parameterType="String" resultType="com.linkcircle.entity.IccpConfigureInfo">
+		SELECT 
+			id,
+			ip,
+			port,
+			password,
+			state,
+			remark
+		FROM 
+			iccp.iccp_sn_info
+		WHERE state="0"
+		AND source=#{source}
+	</select>
+	
+	<!-- 查询所有sn的ip -->
+	<select  id="findAllSnIp" parameterType="String" resultType="String">
+		SELECT 
+			ip
+		FROM 
+			iccp.iccp_sn_info
+		WHERE ip  =#{ip}
+	</select>
+	
+	<!-- 查询所有iccp-sbc的信息 -->
+	<select  id="findIccpSbcInfo" parameterType="String" resultType="com.linkcircle.entity.IccpConfigureInfo">
+		SELECT 
+			id,
+			ip,
+			port,
+			state
+		FROM 
+			iccp.iccp_sbc_info
+		WHERE state="0"
+		AND source=#{source}
+	</select>
+	
+	<!-- 查询所有sbc的Ip -->
+	<select  id="findAllSbcIp" parameterType="String" resultType="String">
+		SELECT 
+			ip
+		FROM 
+			iccp.iccp_sbc_info
+		WHERE ip  =#{ip}
+	</select>
+	
+	<!-- 新增sn节点信息 -->
+	<insert  id="addSn" parameterType="com.linkcircle.entity.IccpConfigureInfo">
+		INSERT INTO
+			iccp.iccp_sn_info
+		(ip,port,state,source)
+		VALUES
+		(#{ip},#{port},"0",#{source})
+	</insert>
+	
+	<!-- 新增sbc节点信息 -->
+	<insert  id="addSbc" parameterType="com.linkcircle.entity.IccpConfigureInfo">
+		INSERT INTO
+			iccp.iccp_sbc_info
+		(ip,port,state,source)
+		VALUES
+		(#{ip},#{port},"0",#{source})
+	</insert>
+	
+	
+	<!-- 删除sn节点【将状态改为1：不可用】 -->
+	<update  id="removeSn" parameterType="String">
+		UPDATE 
+			iccp.iccp_sn_info
+		SET state="1"
+		WHERE ip=#{ip}
+	</update>
+	
+	<!-- 恢复sn节点【将状态改为0：可用】 -->
+	<update  id="resetSn" parameterType="String">
+		UPDATE 
+			iccp.iccp_sn_info
+		SET state="0"
+		WHERE ip=#{ip}
+	</update>
+	
+	<!-- 删除sbc节点【将状态改为1：不可用】 -->
+	<update  id="removeSbc" parameterType="String">
+		UPDATE 
+			iccp.iccp_sbc_info
+		SET state="1"
+		WHERE ip=#{ip}
+	</update>
+	
+	<!-- 恢复sbc节点【将状态改为0：可用】 -->
+	<update  id="resetSbc" parameterType="String">
+		UPDATE 
+			iccp.iccp_sbc_info
+		SET state="0"
+		WHERE ip=#{ip}
+	</update>
+</mapper>

@@ -1,0 +1,319 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.linkcircle.mapper.CacheNumberMapper">
+	<!-- redis缓存 -->
+	<cache eviction="LRU" type="com.linkcircle.cache.RedisCache" />
+
+	<!--查找被叫号码 -->
+	<select id="findDisplayNum" resultType="string" parameterType="hashmap">
+		SELECT
+		ctdapi.ctd_display_num.displaynum
+		FROM
+		ctdapi.ctd_display_num ,
+		smp.t_hcode
+		where smp.t_hcode.telcode =#{calledNum} and
+		ctdapi.ctd_display_num.vccid=#{vccId} and
+		ctdapi.ctd_display_num.servicekey =#{serviceKey}
+		and
+		smp.t_hcode.areacode=ctdapi.ctd_display_num.areaCode
+		and ctdapi.ctd_display_num.`status`=1
+	</select>
+
+
+	<!--查找被叫号码 -->
+	<select id="findDisplayNumByCode" resultType="string"
+		parameterType="hashmap">
+		SELECT
+		ctdapi.ctd_display_num.displaynum
+		FROM
+		ctdapi.ctd_display_num
+		where
+		ctdapi.ctd_display_num.vccid=#{vccId} and
+		ctdapi.ctd_display_num.servicekey =#{serviceKey} and
+		ctdapi.ctd_display_num.areaCode = #{calledNum}
+		and ctdapi.ctd_display_num.`status`=1
+	</select>
+
+	<resultMap id="BaseResultMap" type="com.linkcircle.entity.CtdDisplayNum">
+		<id column="id" property="id" jdbcType="INTEGER" />
+		<result column="displaynum" property="displaynum" jdbcType="VARCHAR" />
+		<result column="areaCode" property="areacode" jdbcType="VARCHAR" />
+		<result column="createTime" property="createtime" jdbcType="VARCHAR" />
+		<result column="updateTime" property="updatetime" jdbcType="VARCHAR" />
+		<result column="vccid" property="vccid" jdbcType="VARCHAR" />
+		<result column="servicekey" property="servicekey" jdbcType="VARCHAR" />
+		<result column="status" property="status" jdbcType="INTEGER" />
+	</resultMap>
+	<sql id="Example_Where_Clause">
+		<where>
+			<foreach collection="oredCriteria" item="criteria" separator="or">
+				<if test="criteria.valid">
+					<trim prefix="(" suffix=")" prefixOverrides="and">
+						<foreach collection="criteria.criteria" item="criterion">
+							<choose>
+								<when test="criterion.noValue">
+									and ${criterion.condition}
+								</when>
+								<when test="criterion.singleValue">
+									and ${criterion.condition} #{criterion.value}
+								</when>
+								<when test="criterion.betweenValue">
+									and ${criterion.condition} #{criterion.value}
+									and
+									#{criterion.secondValue}
+								</when>
+								<when test="criterion.listValue">
+									and ${criterion.condition}
+									<foreach collection="criterion.value" item="listItem"
+										open="(" close=")" separator=",">
+										#{listItem}
+									</foreach>
+								</when>
+							</choose>
+						</foreach>
+					</trim>
+				</if>
+			</foreach>
+		</where>
+	</sql>
+	<sql id="Update_By_Example_Where_Clause">
+		<where>
+			<foreach collection="example.oredCriteria" item="criteria"
+				separator="or">
+				<if test="criteria.valid">
+					<trim prefix="(" suffix=")" prefixOverrides="and">
+						<foreach collection="criteria.criteria" item="criterion">
+							<choose>
+								<when test="criterion.noValue">
+									and ${criterion.condition}
+								</when>
+								<when test="criterion.singleValue">
+									and ${criterion.condition} #{criterion.value}
+								</when>
+								<when test="criterion.betweenValue">
+									and ${criterion.condition} #{criterion.value}
+									and
+									#{criterion.secondValue}
+								</when>
+								<when test="criterion.listValue">
+									and ${criterion.condition}
+									<foreach collection="criterion.value" item="listItem"
+										open="(" close=")" separator=",">
+										#{listItem}
+									</foreach>
+								</when>
+							</choose>
+						</foreach>
+					</trim>
+				</if>
+			</foreach>
+		</where>
+	</sql>
+	<sql id="Base_Column_List">
+		id, displaynum, areaCode, createTime, updateTime, vccid,
+		servicekey,
+		status
+	</sql>
+	<select id="selectByExample" resultMap="BaseResultMap"
+		parameterType="com.linkcircle.entity.CtdDisplayNumExample">
+		select
+		<if test="distinct">
+			distinct
+		</if>
+		<include refid="Base_Column_List" />
+		from ctd_display_num
+		<if test="_parameter != null">
+			<include refid="Example_Where_Clause" />
+		</if>
+		<if test="orderByClause != null">
+			order by ${orderByClause}
+		</if>
+	</select>
+	<select id="selectByPrimaryKey" resultMap="BaseResultMap"
+		parameterType="java.lang.Integer">
+		select
+		<include refid="Base_Column_List" />
+		from ctd_display_num
+		where id = #{id,jdbcType=INTEGER}
+	</select>
+	<delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+		delete from
+		ctd_display_num
+		where id = #{id,jdbcType=INTEGER}
+	</delete>
+	<delete id="deleteByExample" parameterType="com.linkcircle.entity.CtdDisplayNumExample">
+		delete from ctd_display_num
+		<if test="_parameter != null">
+			<include refid="Example_Where_Clause" />
+		</if>
+	</delete>
+	<insert id="insert" parameterType="com.linkcircle.entity.CtdDisplayNum">
+		insert into ctd_display_num
+		(id, displaynum, areaCode,
+		createTime, updateTime, vccid,
+		servicekey,
+		status)
+		values (#{id,jdbcType=INTEGER}, #{displaynum,jdbcType=VARCHAR},
+		#{areacode,jdbcType=VARCHAR},
+		#{createtime,jdbcType=VARCHAR},
+		#{updatetime,jdbcType=VARCHAR}, #{vccid,jdbcType=VARCHAR},
+		#{servicekey,jdbcType=VARCHAR}, #{status,jdbcType=INTEGER})
+	</insert>
+	<insert id="insertSelective" useGeneratedKeys="true"
+		keyProperty="id" parameterType="com.linkcircle.entity.CtdDisplayNum">
+		insert into ctd_display_num
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+				id,
+			</if>
+			<if test="displaynum != null">
+				displaynum,
+			</if>
+			<if test="areacode != null">
+				areaCode,
+			</if>
+			<if test="createtime != null">
+				createTime,
+			</if>
+			<if test="updatetime != null">
+				updateTime,
+			</if>
+			<if test="vccid != null">
+				vccid,
+			</if>
+			<if test="servicekey != null">
+				servicekey,
+			</if>
+			<if test="status != null">
+				status,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+				#{id,jdbcType=INTEGER},
+			</if>
+			<if test="displaynum != null">
+				#{displaynum,jdbcType=VARCHAR},
+			</if>
+			<if test="areacode != null">
+				#{areacode,jdbcType=VARCHAR},
+			</if>
+			<if test="createtime != null">
+				#{createtime,jdbcType=VARCHAR},
+			</if>
+			<if test="updatetime != null">
+				#{updatetime,jdbcType=VARCHAR},
+			</if>
+			<if test="vccid != null">
+				#{vccid,jdbcType=VARCHAR},
+			</if>
+			<if test="servicekey != null">
+				#{servicekey,jdbcType=VARCHAR},
+			</if>
+			<if test="status != null">
+				#{status,jdbcType=INTEGER},
+			</if>
+		</trim>
+	</insert>
+	<select id="countByExample" parameterType="com.linkcircle.entity.CtdDisplayNumExample"
+		resultType="java.lang.Integer">
+		select count(*) from ctd_display_num
+		<if test="_parameter != null">
+			<include refid="Example_Where_Clause" />
+		</if>
+	</select>
+	<update id="updateByExampleSelective" parameterType="map">
+		update ctd_display_num
+		<set>
+			<if test="record.id != null">
+				id = #{record.id,jdbcType=INTEGER},
+			</if>
+			<if test="record.displaynum != null">
+				displaynum = #{record.displaynum,jdbcType=VARCHAR},
+			</if>
+			<if test="record.areacode != null">
+				areaCode = #{record.areacode,jdbcType=VARCHAR},
+			</if>
+			<if test="record.createtime != null">
+				createTime = #{record.createtime,jdbcType=VARCHAR},
+			</if>
+			<if test="record.updatetime != null">
+				updateTime = #{record.updatetime,jdbcType=VARCHAR},
+			</if>
+			<if test="record.vccid != null">
+				vccid = #{record.vccid,jdbcType=VARCHAR},
+			</if>
+			<if test="record.servicekey != null">
+				servicekey = #{record.servicekey,jdbcType=VARCHAR},
+			</if>
+			<if test="record.status != null">
+				status = #{record.status,jdbcType=INTEGER},
+			</if>
+		</set>
+		<if test="_parameter != null">
+			<include refid="Update_By_Example_Where_Clause" />
+		</if>
+	</update>
+	<update id="updateByExample" parameterType="map">
+		update ctd_display_num
+		set id = #{record.id,jdbcType=INTEGER},
+		displaynum = #{record.displaynum,jdbcType=VARCHAR},
+		areaCode =
+		#{record.areacode,jdbcType=VARCHAR},
+		createTime =
+		#{record.createtime,jdbcType=VARCHAR},
+		updateTime =
+		#{record.updatetime,jdbcType=VARCHAR},
+		vccid =
+		#{record.vccid,jdbcType=VARCHAR},
+		servicekey =
+		#{record.servicekey,jdbcType=VARCHAR},
+		status =
+		#{record.status,jdbcType=INTEGER}
+		<if test="_parameter != null">
+			<include refid="Update_By_Example_Where_Clause" />
+		</if>
+	</update>
+	<update id="updateByPrimaryKeySelective" parameterType="com.linkcircle.entity.CtdDisplayNum">
+		update ctd_display_num
+		<set>
+			<if test="displaynum != null">
+				displaynum = #{displaynum,jdbcType=VARCHAR},
+			</if>
+			<if test="areacode != null">
+				areaCode = #{areacode,jdbcType=VARCHAR},
+			</if>
+			<if test="createtime != null">
+				createTime = #{createtime,jdbcType=VARCHAR},
+			</if>
+			<if test="updatetime != null">
+				updateTime = #{updatetime,jdbcType=VARCHAR},
+			</if>
+			<if test="vccid != null">
+				vccid = #{vccid,jdbcType=VARCHAR},
+			</if>
+			<if test="servicekey != null">
+				servicekey = #{servicekey,jdbcType=VARCHAR},
+			</if>
+			<if test="status != null">
+				status = #{status,jdbcType=INTEGER},
+			</if>
+		</set>
+		where id = #{id,jdbcType=INTEGER}
+	</update>
+	<update id="updateByPrimaryKey" parameterType="com.linkcircle.entity.CtdDisplayNum">
+		update
+		ctd_display_num
+		set displaynum = #{displaynum,jdbcType=VARCHAR},
+		areaCode = #{areacode,jdbcType=VARCHAR},
+		createTime =
+		#{createtime,jdbcType=VARCHAR},
+		updateTime =
+		#{updatetime,jdbcType=VARCHAR},
+		vccid = #{vccid,jdbcType=VARCHAR},
+		servicekey = #{servicekey,jdbcType=VARCHAR},
+		status =
+		#{status,jdbcType=INTEGER}
+		where id = #{id,jdbcType=INTEGER}
+	</update>
+</mapper>

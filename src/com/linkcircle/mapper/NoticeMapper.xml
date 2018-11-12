@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.linkcircle.mapper.NoticeMapper">
+	<insert id="insertVoice" parameterType="com.linkcircle.entity.VoiceNum">
+		insert into ctd_voice_num
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="vccId != null">
+				vccId,
+			</if>
+			<if test="bussinessId != null">
+				bussinessId,
+			</if>
+			<if test="displayNum != null">
+				displayNum,
+			</if>
+			<if test="serviceKey != null">
+				serviceKey,
+			</if>
+			<if test="playMode != null">
+				playMode,
+			</if>
+			<if test="welcomeIvrName != null">
+				welcomeIvrName,
+			</if>
+			<if test="playMediaName != null">
+				playMediaName,
+			</if>
+			<if test="createtime != null">
+				createtime,
+			</if>
+			<if test="updatetime != null">
+				updatetime,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="vccId != null">
+				#{vccId},
+			</if>
+			<if test="bussinessId != null">
+				#{bussinessId},
+			</if>
+			<if test="displayNum != null">
+				#{displayNum},
+			</if>
+			<if test="serviceKey != null">
+				#{serviceKey},
+			</if>
+			<if test="playMode != null">
+				#{playMode},
+			</if>
+			<if test="welcomeIvrName != null">
+				#{welcomeIvrName},
+			</if>
+			<if test="playMediaName != null">
+				#{playMediaName},
+			</if>
+			<if test="createtime != null">
+				#{createtime},
+			</if>
+			<if test="updatetime != null">
+				#{updatetime},
+			</if>
+		</trim>
+	</insert>
+
+	<!-- 更新业务类型播放语音VCCID,DISPLAYNUM,BUSSINESID,SERVICEKEY -->
+	<update id="updateVoiceById" parameterType="com.linkcircle.entity.VoiceNum">
+		update ctd_voice_num
+		<set>
+			<if test="playMode != null">
+				playMode = #{playMode},
+			</if>
+			<if test="welcomeIvrName != null">
+				welcomeIvrName = #{welcomeIvrName},
+			</if>
+			<if test="playMediaName != null">
+				playMediaName = #{playMediaName},
+			</if>
+			<if test="updatetime != null">
+				updatetime = #{updatetime},
+			</if>
+		</set>
+		where id=#{id}
+	</update>
+
+	<!-- 查找业务类型播放语音VCCID,DISPLAYNUM,BUSSINESID,SERVICEKEY -->
+	<select id="findVoiceByVDBS" parameterType="hashmap"
+		resultType="string">
+		SELECT
+		ctd_voice_num.id
+		FROM
+		ctd_voice_num
+		where vccId = #{vccId} and
+		bussinessId=#{bussinessId} and
+		displayNum=#{displayNum} and
+		serviceKey=#{serviceKey}
+	</select>
+
+</mapper>
