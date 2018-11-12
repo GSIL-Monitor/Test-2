@@ -110,7 +110,7 @@ public class TTSTest {
 	}
 
 	@Test
-    public void tts(){
+    public void tts() throws it.sauronsoftware.jave.EncoderException {
         //董总TTS
 //        String apiKey = "iNRKjODfIz1aaMohBajnH77i";
 //        String secretKey = "8iHis9jZ0DWUIecmRHoO74lGlUl0uinj";
@@ -209,11 +209,7 @@ public class TTSTest {
 
 
         //转码
-        try {
-            System.err.println(StringUtil.fileCheck(filePath,filePath));
-        } catch (it.sauronsoftware.jave.EncoderException e) {
-            e.printStackTrace();
-        }
+        System.err.println(StringUtil.fileCheck(filePath,filePath));
     }
 
 

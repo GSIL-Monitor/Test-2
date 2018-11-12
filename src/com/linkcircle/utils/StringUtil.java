@@ -28,7 +28,10 @@ import java.util.regex.Pattern;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import it.sauronsoftware.jave.AudioAttributes;
+import it.sauronsoftware.jave.Encoder;
 import it.sauronsoftware.jave.EncoderException;
+import it.sauronsoftware.jave.EncodingAttributes;
 import org.apache.log4j.Logger;
 import org.dom4j.Document;
 import org.dom4j.Element;
@@ -43,10 +46,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.linkcircle.json.entity.AccessToken;
 import com.linkcircle.json.entity.HttpResponse;
 import com.linkcircle.json.entity.TtsRequest;
-
-import it.sauronsoftware.jave.AudioAttributes;
-import it.sauronsoftware.jave.Encoder;
-import it.sauronsoftware.jave.EncodingAttributes;
 
 /**
  * @Title: StringUtils
@@ -158,36 +157,60 @@ public class StringUtil {
 	 * @Description(文件格式转换) @param filePath
 	 * @return
 	 */
-	public static boolean fileCheck(String filePath, String targetFile)throws java.lang.IllegalArgumentException,
-            it.sauronsoftware.jave.InputFormatException,
-            it.sauronsoftware.jave.EncoderException {
-	    //需要转码的文件
-		File source = new File(filePath);
+	public static boolean fileCheck(String filePath, String targetFile)throws java.lang.IllegalArgumentException {
+        //需要转码的文件
+        File source = new File(filePath);
 
         System.err.println(source.getAbsolutePath());
-		//转码后生成的文件
-		File target = new File(targetFile);
-		AudioAttributes audio = new AudioAttributes();
-
-		audio.setCodec("pcm_s16le");
-        audio.setBitRate(16);
-		audio.setSamplingRate(new Integer(8000));
-		EncodingAttributes attrs = new EncodingAttributes();
-		attrs.setFormat("");
-		attrs.setAudioAttributes(audio);
-		Encoder encoder = new Encoder();
+        //转码后生成的文件
+        File target = new File(targetFile);
+//        File source = new File("source.avi");
+//        File target = new File("target.wav");
+        AudioAttributes audio = new AudioAttributes();
+        audio.setCodec("pcm_s16le");
+        EncodingAttributes attrs = new EncodingAttributes();
+        attrs.setFormat("wav");
+        attrs.setAudioAttributes(audio);
+        Encoder encoder = new Encoder();
         try {
-            System.err.println(encoder.getSupportedDecodingFormats().toString());
+            encoder.encode(source, target, attrs);
+            return true;
         } catch (EncoderException e) {
             e.printStackTrace();
+            return false;
         }
-        try {
-			encoder.encode(source, target, attrs);
-		} catch (Exception e) {
-		    e.printStackTrace();
-			return false;
-		}
-		return true;
+
+
+//
+//        //需要转码的文件
+//        File source = new File(filePath);
+//
+//        System.err.println(source.getAbsolutePath());
+//        //转码后生成的文件
+//        File target = new File(targetFile);
+//
+//		AudioAttributes audio = new AudioAttributes();
+//
+//		audio.setCodec("pcm_s16le");
+//        audio.setBitRate(16);
+//		audio.setSamplingRate(new Integer(8000));
+//		EncodingAttributes attrs = new EncodingAttributes();
+//		attrs.setFormat("");
+//		attrs.setAudioAttributes(audio);
+//        Encoder encoder = new Encoder();
+////		Encoder encoder = new Encoder();
+//        try {
+//            System.err.println(encoder.getSupportedDecodingFormats().toString());
+//        } catch (EncoderException e) {
+//            e.printStackTrace();
+//        }
+//        try {
+//			encoder.encode(source, target, attrs);
+//		} catch (Exception e) {
+//		    e.printStackTrace();
+//			return false;
+//		}
+//		return true;
 	}
 	/**
 	 * @Description(获取文件的播放时长) @param path
